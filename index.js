@@ -29,14 +29,32 @@ app.get("/api/:date", function (req, res) {
 
   if(!isNaN(date)) { //User input is a string, not a number. Case 1.
     date = parseInt(date); // * 1000;
-    console.log(parseInt(date)); // * 1000);
+    // console.log(parseInt(date)); // * 1000);
   } else {
     // console.log("not number");
+    if ( isNaN(Date.parse(date)) ) {
+      res.json({error : "Invalid Date"});
+    }
   }
+
+  let unix = new Date(date).getTime(); //Converts user_input to a Unix timestamp.
+  let utc = new Date(date).toUTCString(); //Converts user_input to a UTC timestamp.
+  
   res.json({
-    unix: new Date(date).getTime(),
-    utc: new Date(date).toUTCString()
+    unix: unix,
+    utc: utc
   });
+});
+
+app.get("/api", function (req, res) {
+  let unix = new Date().getTime(); //Converts user_input to a Unix timestamp.
+  let utc = new Date().toUTCString(); //Converts user_input to a UTC timestamp.
+  
+  res.json({
+    unix: unix,
+    utc: utc
+  });
+});
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
